@@ -7,7 +7,7 @@
 var express    = require('express'); 		// call express
 var app        = express(); 				// define our app using express
 var bodyParser = require('body-parser');
-var template     = require('./app/models/template');
+var template   = require('./app/models/template');
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -32,14 +32,8 @@ router.get('/', function(req, res) {
 });
 
 router.route('/templates')
-
 		.get(function(req, res) {
-		Template.find(function(err, templates) {
-			if (err)
-				res.send(err);
-
-			res.json(templates);
-		});
+			res.json(template.getTemplates());
 	});
 
 // more routes for our API will happen here
