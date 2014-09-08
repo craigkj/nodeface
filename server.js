@@ -7,7 +7,7 @@
 var express    = require('express'); 		// call express
 var app = exports.app = express(); 				// define our app using express
 var bodyParser = require('body-parser');
-var templateManager   = require('./app/models/template');
+var templateManager   = require('./app/models/templateService');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -43,16 +43,11 @@ router.route('/templates')
   		res.json('posting a template');
 	});
 
-// Testing only. REMOVE
-router.route('/createTemplate')
-	.get(function(req, res) {
-		templateManager.createTemplate('testing', 'This is some content', 'text/plain');
-		res.json(templateManager.getTemplates());
-	});
-
 // get a template by its endpoint
-router.route('/:endpoint')
+router.route('/*')
 	.get(function(req, res) {
+		//res.json("getting an endpoint");
+		console.log(req.url.substring(1));
 		var template = templateManager.findTemplate(req.url.substring(1))
 		res.json(template.content)
 	});
@@ -63,7 +58,6 @@ router.route('/params/:endpoint')
 		res.json("TODO")
 	});
 
-
 app.use('/', router);
 
 // START THE SERVER
@@ -72,10 +66,9 @@ app.listen(port);
 console.log('nodeface is mocking on port: ' + port);
 
 // TODO LIST
-
-// Add basic tests for the above - Mocha, Karma and ... ?
-// POST on create template
-// Save to local file? - Interface for s3/db/other file storage
-// add params to templates
-// get with params
-// ignore params in template match
+// Template Object
+// Template Repository.
+// Save to local file? - Interface for s3/db/other file storage 5/10
+// add params to templates 4/10
+// get with params 5/10
+// ignore params in template match 8/10
