@@ -7,7 +7,7 @@
 var express    = require('express'); 		// call express
 var app = exports.app = express(); 				// define our app using express
 var bodyParser = require('body-parser');
-var templateManager   = require('./app/models/templateService');
+var templateService   = require('./app/models/templateService');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -35,27 +35,32 @@ router.get('/', function(req, res) {
 // get all templates and post new ones
 router.route('/templates')
 	.get(function(req, res) {
-		res.json(templateManager.getTemplates())
+		res.json(templateService.getTemplates())
 	})
 	.post(function(req, res, next) {
-		templateManager.parsePostBody(req.body);
-		console.log(req);
+		console.log(req.body);
+		templateService.parsePostBody(req.body);
   		res.json('posting a template');
 	});
 
-// get a template by its endpoint
-router.route('/*')
+// set params on an endpoint
+router.route('/parameters/:endpoint')
 	.get(function(req, res) {
-		//res.json("getting an endpoint");
-		console.log(req.url.substring(1));
-		var template = templateManager.findTemplate(req.url.substring(1))
-		res.json(template.content)
+		console.log('PARAMETERS');
+		res.json(templateService.getParameters(req.params.endpoint))
+	})
+	.post(function(req, res, next) {
+		console.log('PARAMETERS');
+		templateService.setParameters(req.params.endpoint, req.body)
+		res.json('Ok')
 	});
 
-// set params on an endpoint
-router.route('/params/:endpoint')
+// get a template by its endpoint
+router.route('mock/*')
 	.get(function(req, res) {
-		res.json("TODO")
+		console.log('ENDPOINT');
+		var template = templateService.findTemplate(req.url.substring(1))
+		res.json(template.content)
 	});
 
 app.use('/', router);
@@ -66,9 +71,9 @@ app.listen(port);
 console.log('nodeface is mocking on port: ' + port);
 
 // TODO LIST
-// Template Object
-// Template Repository.
+// Template Object - specify this properly
+// Template Repository - add as own file to handle pulling the template from memory or file or other
+// ... could make an interface to be used for this.
 // Save to local file? - Interface for s3/db/other file storage 5/10
-// add params to templates 4/10
-// get with params 5/10
+// get with params (i.e use the parameters...) 5/10
 // ignore params in template match 8/10
